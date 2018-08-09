@@ -31,3 +31,6 @@ class AgentEdge(Edge):
   def __repr__(self):
     info = super(AgentEdge, self).__repr__()
     return info +", r_ij: {}".format(self.r_ij)
+
+  def state(self):
+    return np.array([self.d, self.theta/np.pi, self.r_ij/np.pi])
