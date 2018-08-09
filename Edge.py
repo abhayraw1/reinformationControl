@@ -19,10 +19,11 @@ class Edge(object):
 class AgentEdge(Edge):
   def __init__(self, agent_pair):
     self.i, self.j = agent_pair
+    self.ij = (self.i.id, self.j.id)
     super(AgentEdge, self).__init__(0, 0, 0)
 
   def update(self):
-    dx, dy, self.r_ij = self.j.pose - self.i.pose
+    dx, dy, self.r_ij = wrap_angle(self.j.pose - self.i.pose)
     self.d      = np.linalg.norm([dx, dy])
     self.t_ij   = np.matrix([dx, dy])*R(self.i.pose.theta)/self.d
     self.theta  = np.arctan2(*self.t_ij.tolist()[0][::-1])
