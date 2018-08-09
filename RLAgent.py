@@ -1,5 +1,6 @@
-from Edge import AgentEdge
+import numpy as np
 from PointEnvironment.Pose import Pose
+from PointEnvironment.Agent import Agent
 
 class RLAgent(Agent):
   def __init__(self, edges, partial_env, train, pose=Pose(),  \
