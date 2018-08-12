@@ -13,15 +13,15 @@ HIDDEN1_UNITS = 300
 HIDDEN2_UNITS = 600
 
 class CriticNetwork(object):
-  def __init__(self, sess, state_size, action_size, BATCH_SIZE, TAU, LEARNING_RATE, TARGET):
+  def __init__(self, sess, state_size, action_size, tau, lr, target):
     self.sess = sess
-    self.BATCH_SIZE = BATCH_SIZE
-    self.TAU = TAU
-    self.LEARNING_RATE = LEARNING_RATE
+    self.tau = tau
+    self.lr = lr
     self.action_size = action_size
     K.set_session(sess)
     self.model, self.action, self.state = self.create_critic_network(state_size, action_size)
-    self.target_model, self.target_action, self.target_state = TARGET
+    if target:
+        self.target_model, self.target_action, self.target_state = target.model, target.action, target.state
     self.action_grads = tf.gradients(self.model.output, self.action) #GRADIENTS for policy update
     self.sess.run(tf.initialize_all_variables())
 
@@ -35,7 +35,7 @@ class CriticNetwork(object):
     critic_weights = self.model.get_weights()
     critic_target_weights = self.target_model.get_weights()
     for i in xrange(len(critic_weights)):
-      critic_target_weights[i] = self.TAU * critic_weights[i] + (1 - self.TAU)* critic_target_weights[i]
+      critic_target_weights[i] = self.tau * critic_weights[i] + (1 - self.tau)* critic_target_weights[i]
     self.target_model.set_weights(critic_target_weights)
 
   def create_critic_network(self, state_size,action_dim):
@@ -49,6 +49,6 @@ class CriticNetwork(object):
     h3 = Dense(HIDDEN2_UNITS, activation='relu')(h2)
     V = Dense(action_dim,activation='linear')(h3)
     model = Model(input=[S,A],output=V)
-    adam = Adam(lr=self.LEARNING_RATE)
+    adam = Adam(lr=self.lr)
     model.compile(loss='mse', optimizer=adam)
     return model, A, S
