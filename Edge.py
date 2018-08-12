@@ -1,4 +1,6 @@
 import numpy as np
+import HyperParams as HP
+from numpy.linalg import norm
 from PointEnvironment.Utils import rreplace, wrap_angle, R
 
 class Edge(object):
@@ -13,7 +15,11 @@ class Edge(object):
     return info
 
   def __sub__(self, other):
-    return self.d - other.d
+    ## Reward function not good :(
+    error = self.d*self.t_ij - other.d*other.t_ij
+    n = -norm(error)
+    return n
+    # return n*np.cos(np.arctan2(*error.tolist()[0][::-1])/2)*HP.REWARD_SCALE
 
 
 class AgentEdge(Edge):
@@ -24,10 +30,11 @@ class AgentEdge(Edge):
     self.update()
 
   def update(self):
-    dx, dy, self.r_ij = wrap_angle(self.j.pose - self.i.pose)
+    dx, dy, self.r_ij = self.j.pose - self.i.pose
     self.d      = np.linalg.norm([dx, dy])
-    self.t_ij   = np.matrix([dx, dy])*R(self.i.pose.theta)/self.d
-    self.theta  = np.arctan2(*self.t_ij.tolist()[0][::-1])
+    self.r      = self.i.pose.theta
+    self.t_ij   = np.matrix([dx, dy])*R(self.r)/self.d
+    self.theta  = np.arctan2(dy, dx)
 
   def __repr__(self):
     info = super(AgentEdge, self).__repr__()
