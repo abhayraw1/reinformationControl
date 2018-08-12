@@ -22,7 +22,7 @@ class Shape(object):
   def __sub__(self, other):
     cost = {}
     for i,j in self.edges.keys():
-      cost[i,j] = (self.edges[i,j]-other.edges[i,j]) 
+      cost[i,j] = (self.edges[i,j]-other.edges[i,j])
     return cost
 
 class ShapeByAgents(Shape):
