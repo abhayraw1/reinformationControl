@@ -1,5 +1,7 @@
+import numpy as np
+
 BUFFER_SIZE = 10**5
-BATCH_SIZE = 32
+BATCH_SIZE = 2
 GAMMA = 0.99
 
 STATE_DIM = 3
@@ -17,9 +19,19 @@ CRITIC_N_NEURONS_L0 = 300
 CRITIC_N_NEURONS_L1 = 300
 CRITIC_TAU = 1e-3
 CRITIC_LR = 1e-3
+NUM_EPOCS = 10
 
 NUM_EPS = 10**6
+# NUM_EPS = 10
 MAX_EPS_LEN = 30
 
 EVAL_INTERVAL = 100
 EVAL_EPS_LEN = 2*MAX_EPS_LEN
+
+
+OU_MEAN   = [0.2, 0]
+OU_THETA  = [0.3, 0.4]
+OU_SIGMA  = [0.3, 0.3]
+
+MAX_ACTION = np.array([0.4 ,  0.7])
+MIN_ACTION = np.array([0   , -0.7])
