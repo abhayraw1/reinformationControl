@@ -30,15 +30,22 @@ class AgentEdge(Edge):
     self.update()
 
   def update(self):
+    # print "EDGE {}-{}".format(self.i.id, self.j.id)
+    # print self.i.pose
+    # print self.j.pose
     dx, dy, self.r_ij = self.j.pose - self.i.pose
     self.d      = np.linalg.norm([dx, dy])
     self.r      = self.i.pose.theta
     self.t_ij   = np.matrix([dx, dy])*R(self.r)/self.d
     self.theta  = np.arctan2(dy, dx)
+    # print self.state()
 
   def __repr__(self):
     info = super(AgentEdge, self).__repr__()
     return info +", r_ij: {}".format(self.r_ij)
 
-  def state(self):
-    return np.array([self.d, self.theta/np.pi, self.r_ij/np.pi])
+  def state(self, targetshape):
+    target = targetshape.edges[self.ij]
+    targetstate = np.array([target.d, target.theta/np.pi, 0])
+    state = np.array([self.d, self.theta/np.pi, self.r_ij/np.pi])
+    return state - targetstate
