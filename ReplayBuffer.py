@@ -9,7 +9,6 @@ class ReplayBuffer(object):
     self.buffer = deque()
 
   def getBatch(self, batch_size):
-    # Randomly sample batch_size examples
     if self.num_experiences < batch_size:
       return random.sample(self.buffer, self.num_experiences)
     else:
@@ -28,10 +27,11 @@ class ReplayBuffer(object):
       self.buffer.append(experience)
 
   def count(self):
-    # if buffer is full, return buffer size
-    # otherwise, return experience counter
     return self.num_experiences
 
   def erase(self):
     self.buffer = deque()
     self.num_experiences = 0
+
+  def __str__(self):
+    return str(self.buffer)
