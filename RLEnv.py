@@ -26,9 +26,7 @@ class FormationEnvironment(PointEnvironment):
 
   def cost(self, agent_id=None):
     cost = self.shape - self.targetshape
-    # print "cost: ", cost
     if agent_id != None:
-      print "||{}|| {}".format(agent_id, sum([cost[i, j] for (i,j) in cost.keys() if i == agent_id]))
       return sum([cost[i, j] for (i,j) in cost.keys() if i == agent_id])
     return cost
 
@@ -39,33 +37,48 @@ class FormationEnvironment(PointEnvironment):
 
 class AgentObservedEnvironment:
   def __init__(self, world, agent):
-    self.agent    = agent
-    self.agent_id = agent.id
-    self.world    = world
+    self.agent      = agent
+    self.agent_id   = agent.id
+    self.world      = world
+    self.prev_cost  = 0
+    self.current_st = None
 
-  def reset():
-    self.agent.reset()
-    return _getNextState()
+  def reset(self):
+    self.current_st = self._getNextState()
+    return self.current_st
 
-  def step(self, action):
-    prev_cost = self._getCost()
+  def _step(self, action):
+    self.prev_cost = self._getCost()
     self.world.stepAgent(self.agent_id, action)
-    # prev_states = {i.j.id:i.state() for i in self.agent.edges.values()}
-    reward = self._getAgentReward(prev_cost)
-    return self._getNextState(), reward, self._isTerminal()
+    self.world.updateEdges()
+    self.current_st = self._getNextState()
+    return self.current_st
 
   def _getNextState(self):
-    return {i.j.id:i.state() for i in self.agent.edges.values()}
+    return {i.j.id:i.state(self.world.targetshape) for i in self.agent.edges.values()}
 
   def _getCost(self):
     return self.world.cost(self.agent_id)
 
-
-  def _getAgentReward(self, prev_cost=None):
-    # print "total reward: {} [called from AOE for Agent:{}]".format(self.world.reward(), self.agent_id)
+  def getAgentReward(self):
+    done = self._isTerminal()
     cost = self._getCost()
-    return (cost - prev_cost)*HP.REWARD_SCALE
-    # return sum([reward[i, j] for (i, j) in reward.keys() if i == self.agent_id])
+    if abs(cost) < 0.1:
+      print "---------- FORMATION FORMED ----------", cost
+      return 100, True
+    if done:
+      return -100, True
+    reward = (cost - self.prev_cost)*HP.REWARD_SCALE
+    self.prev_cost = cost
+    return reward, done
 
   def _isTerminal(self):
     return self.world.collisionOccured
+
+  def step(self, nbr, state):
+    action = self.agent.edgeControllers[nbr].act(state)
+    next_state = self._step(action)
+    return action.reshape((HP.ACTION_DIM)), next_state
+
+  def remember(self, nbr, memory):
+    self.agent.edgeControllers[nbr].remember(*memory)
