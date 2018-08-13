@@ -42,32 +42,42 @@ class DDPG:
     self.critic = CriticNetwork(**DDPG.criticParams(sess, target_critic))
     self.target_model = target_model
     self.replaybuffer = ReplayBuffer(HP.BUFFER_SIZE)
-    self.ou = OU()
     self.train = train
+    self.epsilon = 1
 
   def act(self, obs):
-    action = self.actor.model.predict(obs)
-    if self.train:
-      action = self.addOU()
+    action = self.actor.model.predict(obs.reshape(1,HP.STATE_DIM))
+    action = action * (HP.MAX_ACTION-HP.MIN_ACTION) + HP.MIN_ACTION
+    if self.train and self.epsilon > 0:
+      self.epsilon -= 1e-6
+      action = self.addOU(action)
     return action
 
-  def train(self, obs, action, reward, next_obs, done):
-    self.replaybuffer.add(obs, action, reward, next_obs, done)
-    batch = replaybuffer.getBatch(HP.BATCH_SIZE)
+  def addOU(self, action):
+    return action + OU.ou(action, HP.OU_MEAN, HP.OU_THETA, HP.OU_SIGMA)
+
+  def train_models(self):
+    batch = self.replaybuffer.getBatch(HP.BATCH_SIZE)
     experiences = [np.asarray([i[j] for i in batch]) for j in range(5)]
     states, actions, rewards, nstates, dones = experiences
     target_q = self.compute_target_q(nstates, rewards, dones)
-    loss = critic.model.train_on_batch([states, actions], target_q)
-    a_for_grad = actor.model.predict(states)
-    grads = critic.gradients(states, a_for_grad)
+    loss = self.critic.model.train_on_batch([states, actions], target_q)
+    a_for_grad = self.actor.model.predict(states)
+    grads = self.critic.gradients(states, a_for_grad)
     self.actor.train(states, grads)
+    self.actor.target_train()
+    self.critic.target_train()
+    print "loss: ", loss
+
+  def remember(self, obs, action, reward, next_obs, done):
+    self.replaybuffer.add(obs, action, reward, next_obs, done)
 
   def compute_target_q(self, nstates, rewards, dones):
-    target_q_values = self.critic.model.predict([nstates, \
-                      self.actor.predict(nstates)])
+    target_q_values = self.target_model.critic.model.predict([nstates, \
+                      self.target_model.actor.model.predict(nstates)])
     y_t = np.zeros(len(nstates))
-    for idx, nxt_st in enumerate(nstates):
-      y_t[idx] = rewards[idx]
+    for idx, reward in enumerate(rewards):
+      y_t[idx] = reward
       if not dones[idx]:
         y_t += HP.GAMMA*target_q_values[idx]
     return y_t
