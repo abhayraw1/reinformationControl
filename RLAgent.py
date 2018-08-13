@@ -28,6 +28,9 @@ class RLAgent(Agent):
     self.edges[edge.j.id] = edge
     self.n_nhbrs  = len(self.edges)
 
+  def train_edge_controller(self, nbr):
+    self.edgeControllers[nbr].train_models()
+
   # training is done for only two agents at a time to ensure that averaging
   # velocities don't have any negative imact on training...
 
