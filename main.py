@@ -81,7 +81,7 @@ def write_stats(x, y, file):
   f.close()
 
 ############### EVAL FUNCTION
-def evaluate(model, num_times, eps_len, eps):
+def evaluate(num_times, eps_len, eps):
   trewards = []
   for i in xrange(num_times):
     print "EVAL RUN {}".format(i)
@@ -149,7 +149,7 @@ while eps <= HP.NUM_EPS:
   write_stats(eps, r, 'scores')
   print "REWARD: ", sum(r.values())
   if (eps % HP.EVAL_INTERVAL) == 0:
-    eval_score = evaluate(main_model, HP.NUM_EVALS, HP.EVAL_EPS_LEN, eps)
+    eval_score = evaluate(HP.NUM_EVALS, HP.EVAL_EPS_LEN, eps)
     if best_mean_score < eval_score:
       savemodel(eps)
       best_mean_score = eval_score
