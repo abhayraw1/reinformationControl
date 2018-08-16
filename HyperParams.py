@@ -1,38 +1,53 @@
 import numpy as np
 
-BUFFER_SIZE = 10**5
-BATCH_SIZE = 2
-GAMMA = 0.99
 
-STATE_DIM = 3
-ACTION_DIM = 2
+###############################################################################
+####################### ENVIRONMENT RELATED CONSTANTS #########################
+BUFFER_SIZE     = 10**5
+STATE_DIM       = 3
+ACTION_DIM      = 2
 
-REWARD_SCALE = 10
+NUM_ITERATIONS  = 10
+DT              = 0.01
 
-ACTOR_N_NEURONS_L0 = 300
-ACTOR_N_NEURONS_L1 = 300
-ACTOR_TAU = 1e-3
-ACTOR_LR = 1e-4
+REWARD_SCALE    = 10
+REWARD_MAX      = 1.5*REWARD_SCALE*DT*NUM_ITERATIONS*MAX_ACTION[0]
+GAMMA           = 0.99
+
+MAX_ACTION      = np.array([0.4 ,  0.7])
+MIN_ACTION      = np.array([0   , -0.7])
+###############################################################################
+###############################################################################
 
 
+###############################################################################
+############################# TRAINING CONSTANTS ##############################
+BATCH_SIZE          = 32
+ACTOR_N_NEURONS_L0  = 300
+ACTOR_N_NEURONS_L1  = 300
+ACTOR_TAU           = 1e-3
+ACTOR_LR            = 1e-4
 CRITIC_N_NEURONS_L0 = 300
 CRITIC_N_NEURONS_L1 = 300
-CRITIC_TAU = 1e-3
-CRITIC_LR = 1e-3
-NUM_EPOCS = 10
-
-NUM_EPS = 10**6
-# NUM_EPS = 10
-MAX_EPS_LEN = 30
-
-EVAL_INTERVAL = 1
-EVAL_EPS_LEN = 2*MAX_EPS_LEN
-NUM_EVALS = 15
+CRITIC_TAU          = 1e-3
+CRITIC_LR           = 1e-3
+NUM_EPOCS           = 10
+###############################################################################
+###############################################################################
 
 
-OU_MEAN   = [0.2, 0]
-OU_THETA  = [0.3, 0.4]
-OU_SIGMA  = [0.3, 0.3]
+###############################################################################
+###################### REINFORCEMENT LEARNIING CONSTANTS ######################
+NUM_EPS         = 10**6
+MAX_EPS_LEN     = 30
 
-MAX_ACTION = np.array([0.4 ,  0.7])
-MIN_ACTION = np.array([0   , -0.7])
+EVAL_INTERVAL   = 50
+NUM_EVALS       = 15
+EVAL_EPS_LEN    = 2*MAX_EPS_LEN
+
+
+OU_MEAN         = [0.2, 0]
+OU_THETA        = [0.3, 0.4]
+OU_SIGMA        = [0.3, 0.3]
+###############################################################################
+###############################################################################
