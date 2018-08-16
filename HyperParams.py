@@ -31,7 +31,7 @@ CRITIC_N_NEURONS_L0 = 300
 CRITIC_N_NEURONS_L1 = 600
 CRITIC_TAU          = 1e-3
 CRITIC_LR           = 1e-3
-NUM_EPOCS           = 20
+NUM_EPOCS           = 10
 ###############################################################################
 ###############################################################################
 
@@ -39,10 +39,10 @@ NUM_EPOCS           = 20
 ###############################################################################
 ###################### REINFORCEMENT LEARNIING CONSTANTS ######################
 NUM_EPS         = 10**6
-MAX_EPS_LEN     = 300
+MAX_EPS_LEN     = 200
 
 EVAL_INTERVAL   = 50
-NUM_EVALS       = 15
+NUM_EVALS       = 10
 EVAL_EPS_LEN    = 2*MAX_EPS_LEN
 
 

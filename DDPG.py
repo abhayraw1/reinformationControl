@@ -31,7 +31,7 @@ class DDPG:
             'lr':HP.CRITIC_LR,
             'target': target}
 
-  def __init__(self, target_model=None, train=True):
+  def __init__(self, target_model=None, train=True, replaybuffer=ReplayBuffer(HP.BUFFER_SIZE)):
     assert isinstance(target_model, DDPG) or target_model == None
     config = tf.ConfigProto()
     sess = tf.Session(config=config)
@@ -41,7 +41,6 @@ class DDPG:
     self.actor = ActorNetwork(**DDPG.actorParams(sess, target_actor))
     self.critic = CriticNetwork(**DDPG.criticParams(sess, target_critic))
     self.target_model = target_model
-    self.replaybuffer = ReplayBuffer(HP.BUFFER_SIZE)
     self.train = train
     self.epsilon = 1
 
@@ -67,7 +66,6 @@ class DDPG:
     self.actor.train(states, grads)
     self.actor.target_train()
     self.critic.target_train()
-    # print "loss: ", loss
 
   def remember(self, obs, action, reward, next_obs, done):
     self.replaybuffer.add(obs, action, reward, next_obs, done)

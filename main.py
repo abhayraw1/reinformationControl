@@ -4,6 +4,7 @@ from DDPG import DDPG
 import HyperParams as HP
 from RLAgent import RLAgent
 from Shape import ShapeByGeometry
+from ReplayBuffer import ReplayBuffer
 from PointEnvironment.Pose import Pose
 from RLEnv import FormationEnvironment, AgentObservedEnvironment
 
@@ -52,9 +53,12 @@ for agent in eval_env.agents.values():
 main_model = DDPG(train=False)
 print "*"*80
 print "MAINMODEL: ", main_model
+
 ############### INIT AGENT EDGES
+common_replay_buffer = ReplayBuffer(HP.BUFFER_SIZE)
+
 for i, j in env.agentpairs:
-  i.initEdgeControllers(j.id, DDPG(target_model=main_model))
+  i.initEdgeControllers(j.id, DDPG(target_model=main_model, replaybuffer=common_replay_buffer))
 
 
 for i, j in eval_env.agentpairs:
@@ -148,6 +152,7 @@ while eps <= HP.NUM_EPS:
     t += 1
   write_stats(eps, r, 'results/scores')
   print "REWARD: ", sum(r.values())
+  print "CBUFFR: ", common_replay_buffer.count()
   if (eps % HP.EVAL_INTERVAL) == 0:
     eval_score = evaluate(HP.NUM_EVALS, HP.EVAL_EPS_LEN, eps)
     if best_mean_score < eval_score:
