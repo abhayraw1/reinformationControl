@@ -71,8 +71,8 @@ def randPose():
   return Pose(*(np.random.random(3)*k - k/2.).tolist())
 ############### SAVE MODEL
 def savemodel(eps):
-  main_model.actor.model.save('model/actor/E_{}.h5'.format(eps))
-  main_model.critic.model.save('model/critic/E_{}.h5'.format(eps))
+  main_model.actor.model.save('results/model/actor/E_{}.h5'.format(eps))
+  main_model.critic.model.save('results/model/critic/E_{}.h5'.format(eps))
 
 ############### SAVE STATS
 def write_stats(x, y, file):
@@ -108,7 +108,7 @@ def evaluate(num_times, eps_len, eps):
     print "--REWARD: ", sum(r.values())
   ttrr = np.mean(trewards)
   print "EVAL MEAN SCORE: ", ttrr
-  write_stats(eps, ttrr, 'mean_scores')
+  write_stats(eps, ttrr, 'results/mean_scores')
   return ttrr
 
 
@@ -146,7 +146,7 @@ while eps <= HP.NUM_EPS:
         print env.targetshape
         print env.shape
     t += 1
-  write_stats(eps, r, 'scores')
+  write_stats(eps, r, 'results/scores')
   print "REWARD: ", sum(r.values())
   if (eps % HP.EVAL_INTERVAL) == 0:
     eval_score = evaluate(HP.NUM_EVALS, HP.EVAL_EPS_LEN, eps)
