@@ -37,6 +37,13 @@ class ActorNetwork(object):
       actor_target_weights[i] = self.tau * actor_weights[i] + (1 - self.tau)* actor_target_weights[i]
     self.target_model.set_weights(actor_target_weights)
 
+  def setModelToTarget(self):
+    actor_weights = self.model.get_weights()
+    actor_target_weights = self.target_model.get_weights()
+    for i in xrange(len(actor_weights)):
+      actor_weights[i] = np.copy(actor_target_weights[i])
+    self.model.set_weights(actor_weights)
+
   def create_actor_network(self, state_size,action_dim):
     print("Now we build the model")
     S = Input(shape=[state_size])

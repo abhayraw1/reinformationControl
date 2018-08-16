@@ -126,6 +126,12 @@ while eps <= HP.NUM_EPS:
   env.reset({x.id:randPose() for x in agents})
   for aoe in agent_observed_envs.values():
     aoe.reset()
+
+  for aoe in agent_observed_envs.values():
+    for nbr in aoe.current_st.keys():
+      aoe.agent.edgeControllers[nbr].actor.setModelToTarget()
+      aoe.agent.edgeControllers[nbr].critic.setModelToTarget()
+
   more_steps = int(np.random.random()*eps/20)
   while t <= (HP.MAX_EPS_LEN + more_steps):
     for agent_id, aoe in agent_observed_envs.items():

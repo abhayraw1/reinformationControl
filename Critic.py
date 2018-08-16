@@ -36,6 +36,13 @@ class CriticNetwork(object):
       critic_target_weights[i] = self.tau * critic_weights[i] + (1 - self.tau)* critic_target_weights[i]
     self.target_model.set_weights(critic_target_weights)
 
+  def setModelToTarget(self):
+    critic_weights = self.model.get_weights()
+    critic_target_weights = self.target_model.get_weights()
+    for i in xrange(len(critic_weights)):
+      critic_weights[i] = np.copy(critic_target_weights[i])
+    self.model.set_weights(critic_weights)
+
   def create_critic_network(self, state_size,action_dim):
     print("Now we build the model")
     S = Input(shape=[state_size])
