@@ -85,11 +85,11 @@ def evaluate(model, num_times, eps_len, eps):
   trewards = []
   for i in xrange(num_times):
     print "EVAL RUN {}".format(i)
-    r = {i.id:0 for i in agents}
+    r = {i.id:0 for i in eval_agents}
     terminal = []
     collision = False
     eval_env.targetshape = randomtarget()
-    eval_env.reset({x.id:randPose() for x in agents})
+    eval_env.reset({x.id:randPose() for x in eval_agents})
     for aoe in eval_agent_observed_envs.values():
       aoe.reset()
     for j in xrange(eps_len):
