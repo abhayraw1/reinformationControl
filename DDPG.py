@@ -67,7 +67,7 @@ class DDPG:
     self.actor.train(states, grads)
     self.actor.target_train()
     self.critic.target_train()
-    print "loss: ", loss
+    # print "loss: ", loss
 
   def remember(self, obs, action, reward, next_obs, done):
     self.replaybuffer.add(obs, action, reward, next_obs, done)
@@ -81,3 +81,8 @@ class DDPG:
       if not dones[idx]:
         y_t += HP.GAMMA*target_q_values[idx]
     return y_t
+
+  def save(self, location, epoch):
+    self.actor.model.save(location+'/actor_model_{}.h5'.format(epoch))
+    self.critic.model.save(location+'/critic_model_{}.h5'.format(epoch))
+
