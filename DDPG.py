@@ -41,6 +41,7 @@ class DDPG:
     self.actor = ActorNetwork(**DDPG.actorParams(sess, target_actor))
     self.critic = CriticNetwork(**DDPG.criticParams(sess, target_critic))
     self.target_model = target_model
+    self.replaybuffer = replaybuffer
     self.train = train
     self.epsilon = 1
 
