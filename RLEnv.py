@@ -6,14 +6,18 @@ from Shape import ShapeByAgents, Shape
 
 class FormationEnvironment(PointEnvironment):
   def __init__(self, targetshape, agents, num_iterations=100, dt=0.01):
-    super(FormationEnvironment, self).__init__(num_iterations, dt, agents)
     self.agentpairs = [(i, j) for i in agents \
                       for j in agents if i.id != j.id]
     assert isinstance(targetshape, Shape)
     self.shape = ShapeByAgents(self.agentpairs)
     self.edges = self.shape.edges
     self.targetshape = targetshape
+    super(FormationEnvironment, self).__init__(num_iterations, dt, agents)
     self._bindEdgesToAgents()
+
+  def reset(self, poses={}):
+    super(FormationEnvironment, self).reset(poses)
+    self.updateEdges()
 
   def stepAgent(self, agent_id, action):
     action = np.matrix(action)
@@ -65,12 +69,12 @@ class AgentObservedEnvironment:
     cost = self._getCost()
     if abs(cost) < 0.1:
       print "---------- FORMATION FORMED ----------", cost
-      return 100, True
+      return 100, True, 'f'
     if done:
-      return -100, True
+      return -100, True, 'c'
     reward = (cost - self.prev_cost)*HP.REWARD_SCALE
     self.prev_cost = cost
-    return reward, done
+    return reward, done, ''
 
   def _isTerminal(self):
     return self.world.collisionOccured
