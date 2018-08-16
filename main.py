@@ -36,8 +36,8 @@ agents = [RLAgent(i, pose=agents_pose[i]) for i in range(NUM_AGENTS)]
 eval_agents = [RLAgent(i, pose=agents_pose[i]) for i in range(NUM_AGENTS)]
 
 ############### ENVIRONMENT
-env = FormationEnvironment(targetshape, agents)
-eval_env = FormationEnvironment(targetshape, eval_agents)
+env = FormationEnvironment(targetshape, agents, num_iterations=HP.NUM_ITERATIONS, dt=HP.DT)
+eval_env = FormationEnvironment(targetshape, eval_agents, num_iterations=HP.NUM_ITERATIONS, dt=HP.DT)
 
 ############### PARTIALLY OBSERVED ENVS
 agent_observed_envs = {}
