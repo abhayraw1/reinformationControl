@@ -10,12 +10,12 @@ ACTION_DIM      = 2
 NUM_ITERATIONS  = 10
 DT              = 0.01
 
+MAX_ACTION      = np.array([0.4 ,  0.7])
+MIN_ACTION      = np.array([0   , -0.7])
+
 REWARD_SCALE    = 10
 REWARD_MAX      = 1.5*REWARD_SCALE*DT*NUM_ITERATIONS*MAX_ACTION[0]
 GAMMA           = 0.99
-
-MAX_ACTION      = np.array([0.4 ,  0.7])
-MIN_ACTION      = np.array([0   , -0.7])
 ###############################################################################
 ###############################################################################
 
