@@ -8,9 +8,7 @@ from keras.optimizers import Adam
 import keras.backend as K
 import tensorflow as tf
 from keras.utils import plot_model
-
-HIDDEN1_UNITS = 300
-HIDDEN2_UNITS = 600
+import HyperParams as HP
 
 class CriticNetwork(object):
   def __init__(self, sess, state_size, action_size, tau, lr, target):
@@ -42,11 +40,11 @@ class CriticNetwork(object):
     print("Now we build the model")
     S = Input(shape=[state_size])
     A = Input(shape=[action_dim],name='action2')
-    w1 = Dense(HIDDEN1_UNITS, activation='relu')(S)
-    a1 = Dense(HIDDEN2_UNITS, activation='linear')(A)
-    h1 = Dense(HIDDEN2_UNITS, activation='linear')(w1)
+    w1 = Dense(HP.CRITIC_N_NEURONS_L0, activation='relu')(S)
+    a1 = Dense(HP.CRITIC_N_NEURONS_L1, activation='linear')(A)
+    h1 = Dense(HP.CRITIC_N_NEURONS_L1, activation='linear')(w1)
     h2 = merge([h1,a1],mode='sum')
-    h3 = Dense(HIDDEN2_UNITS, activation='relu')(h2)
+    h3 = Dense(HP.CRITIC_N_NEURONS_L1, activation='relu')(h2)
     V = Dense(1,activation='linear')(h3)
     model = Model(input=[S,A],output=V)
     adam = Adam(lr=self.lr)
