@@ -59,7 +59,8 @@ class AgentObservedEnvironment:
     return self.current_st
 
   def _getNextState(self):
-    return {i.j.id:i.state(self.world.targetshape) for i in self.agent.edges.values()}
+    return {i.j.id:i.state(self.world.targetshape) \
+            for i in self.agent.edges.values()}
 
   def _getCost(self):
     return self.world.cost(self.agent_id)
@@ -68,10 +69,9 @@ class AgentObservedEnvironment:
     done = self._isTerminal()
     cost = self._getCost()
     if abs(cost) < 0.1:
-      print "---------- FORMATION FORMED ----------", cost
-      return 100, True, 'f'
+      return HP.REWARD_MAX, True, 'f'
     if done:
-      return -100, True, 'c'
+      return -HP.REWARD_MAX, True, 'c'
     reward = (cost - self.prev_cost)*HP.REWARD_SCALE
     self.prev_cost = cost
     return reward, done, ''
