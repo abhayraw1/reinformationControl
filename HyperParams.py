@@ -3,7 +3,6 @@ import numpy as np
 
 ###############################################################################
 ####################### ENVIRONMENT RELATED CONSTANTS #########################
-BUFFER_SIZE     = 10**5
 STATE_DIM       = 3
 ACTION_DIM      = 2
 
@@ -22,16 +21,17 @@ GAMMA           = 0.99
 
 ###############################################################################
 ############################# TRAINING CONSTANTS ##############################
+BUFFER_SIZE         = 10**6
 BATCH_SIZE          = 32
 ACTOR_N_NEURONS_L0  = 300
-ACTOR_N_NEURONS_L1  = 300
+ACTOR_N_NEURONS_L1  = 600
 ACTOR_TAU           = 1e-3
 ACTOR_LR            = 1e-4
 CRITIC_N_NEURONS_L0 = 300
-CRITIC_N_NEURONS_L1 = 300
+CRITIC_N_NEURONS_L1 = 600
 CRITIC_TAU          = 1e-3
 CRITIC_LR           = 1e-3
-NUM_EPOCS           = 10
+NUM_EPOCS           = 20
 ###############################################################################
 ###############################################################################
 
