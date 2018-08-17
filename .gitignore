@@ -4,3 +4,4 @@ score*
 *.png
 model/*
 results/*
+*.ipynb
