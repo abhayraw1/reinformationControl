@@ -34,7 +34,7 @@ class AgentEdge(Edge):
     self.d      = np.linalg.norm([dx, dy])
     self.r      = self.i.pose.theta
     self.t_ij   = np.matrix([dx, dy])*R(self.r)/self.d
-    self.theta  = np.arctan2(dy, dx)
+    self.theta  = np.arctan2(self.t_ij[0,1], self.t_ij[0,0])
 
   def __repr__(self):
     info = super(AgentEdge, self).__repr__()

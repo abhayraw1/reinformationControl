@@ -29,19 +29,3 @@ class RLAgent(Agent):
 
   def train_edge_controller(self, nbr):
     self.edgeControllers[nbr].train_models()
-
-  # training is done for only two agents at a time to ensure that averaging
-  # velocities don't have any negative imact on training...
-
-
-  # def act(self):
-  #   action = np.zeros(2, 'f').reshape((1,2))
-  #   for k in self.edgeControllers.keys():
-  #     obs = self.edges[k].state().reshape((1, 3))
-  #     action += controller.act(obs, train=self.train)
-  #   action = action/len(self.edges)
-  #   for k in self.edgeControllers.keys():
-  #     next_state, reward, done = partial_env.step(action, k)
-  #     if self.train:
-  #       controller.replaybuffer.add(obs, action, reward, next_state, done)
-  #       controller.train()

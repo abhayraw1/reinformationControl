@@ -4,6 +4,7 @@ from DDPG import DDPG
 import HyperParams as HP
 from RLAgent import RLAgent
 from Shape import ShapeByGeometry
+from ReplayBuffer import ReplayBuffer
 from PointEnvironment.Pose import Pose
 from RLEnv import FormationEnvironment, AgentObservedEnvironment
 
@@ -52,9 +53,12 @@ for agent in eval_env.agents.values():
 main_model = DDPG(train=False)
 print "*"*80
 print "MAINMODEL: ", main_model
+
 ############### INIT AGENT EDGES
+common_replay_buffer = ReplayBuffer(HP.BUFFER_SIZE)
+
 for i, j in env.agentpairs:
-  i.initEdgeControllers(j.id, DDPG(target_model=main_model))
+  i.initEdgeControllers(j.id, DDPG(target_model=main_model, replaybuffer=common_replay_buffer))
 
 
 for i, j in eval_env.agentpairs:
@@ -80,6 +84,19 @@ def write_stats(x, y, file):
   f.write('EPS: {}\nR {}\n\n'.format(x, y))
   f.close()
 
+print main_model, main_model.actor.model, main_model.critic.model
+
+for aoe in agent_observed_envs.values():
+    for nbr in aoe.agent.edgeControllers.keys():
+      agent = aoe.agent
+      print "AGENT ", agent.id
+      print "actor: ", agent.edgeControllers[nbr].actor
+      print "target_actor: ", agent.edgeControllers[nbr].actor.target_model
+      print "target_critic: ", agent.edgeControllers[nbr].critic.target_model
+      print "critic: ", agent.edgeControllers[nbr].critic
+      aoe.agent.edgeControllers[nbr].copy_from_target()
+import sys
+sys.exit(0)
 ############### EVAL FUNCTION
 def evaluate(num_times, eps_len, eps):
   trewards = []
@@ -114,8 +131,10 @@ def evaluate(num_times, eps_len, eps):
 
 eps = 1
 done = False
-k = np.array([10, 10, np.pi])
+k = np.array([10, 10, 2*np.pi])
 best_mean_score = 0
+best_indie_score = 0
+
 while eps <= HP.NUM_EPS:
   print "EPISODE : {}".format(eps)
   t = 1
@@ -124,9 +143,14 @@ while eps <= HP.NUM_EPS:
   collision = False
   env.targetshape = randomtarget()
   env.reset({x.id:randPose() for x in agents})
+
+
   for aoe in agent_observed_envs.values():
     aoe.reset()
-  more_steps = int(np.random.random()*eps/20)
+
+
+  # more_steps = int(np.random.random()*eps/20)
+  more_steps = 0
   while t <= (HP.MAX_EPS_LEN + more_steps):
     for agent_id, aoe in agent_observed_envs.items():
       for nbr, state in aoe.current_st.items():
@@ -146,16 +170,28 @@ while eps <= HP.NUM_EPS:
         print env.targetshape
         print env.shape
     t += 1
+
+
+  if sum(r.values()) > best_indie_score:
+    best_indie_score = sum(r.values())
+  print "REWARD: {}\tBEST_INDIE_SCORE: {}".format(sum(r.values()), best_indie_score)
+
+
   write_stats(eps, r, 'results/scores')
-  print "REWARD: ", sum(r.values())
-  if (eps % HP.EVAL_INTERVAL) == 0:
-    eval_score = evaluate(HP.NUM_EVALS, HP.EVAL_EPS_LEN, eps)
-    if best_mean_score < eval_score:
-      savemodel(eps)
-      best_mean_score = eval_score
+
 
   for aoe in agent_observed_envs.values():
     for nbr in aoe.current_st.keys():
       for epoch in range(HP.NUM_EPOCS):
         aoe.agent.train_edge_controller(nbr)
+
+
+  if (eps % HP.EVAL_INTERVAL) == 0:
+    eval_score = evaluate(HP.NUM_EVALS, HP.EVAL_EPS_LEN, eps)
+    if best_mean_score < eval_score:
+      savemodel(eps)
+      best_mean_score = eval_score
+      for aoe in agent_observed_envs.values():
+        for nbr in aoe.current_st.keys():
+          aoe.agent.edgeControllers[nbr].copy_from_target()
   eps += 1

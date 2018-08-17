@@ -24,21 +24,21 @@ GAMMA           = 0.99
 BUFFER_SIZE         = 10**6
 BATCH_SIZE          = 32
 ACTOR_N_NEURONS_L0  = 300
-ACTOR_N_NEURONS_L1  = 300
-ACTOR_TAU           = 1e-3
+ACTOR_N_NEURONS_L1  = 400
+ACTOR_TAU           = 1e-2
 ACTOR_LR            = 1e-4
 CRITIC_N_NEURONS_L0 = 300
-CRITIC_N_NEURONS_L1 = 500
+CRITIC_N_NEURONS_L1 = 400
 CRITIC_TAU          = 1e-3
 CRITIC_LR           = 1e-3
-NUM_EPOCS           = 15
+NUM_EPOCS           = 10
 ###############################################################################
 ###############################################################################
 
 
 ###############################################################################
 ###################### REINFORCEMENT LEARNIING CONSTANTS ######################
-NUM_EPS         = 10**7
+NUM_EPS         = 10**6
 MAX_EPS_LEN     = 50
 
 EVAL_INTERVAL   = 50
