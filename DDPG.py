@@ -81,6 +81,10 @@ class DDPG:
         y_t += HP.GAMMA*target_q_values[idx]
     return y_t
 
+  def copy_from_target(self):
+    self.actor.copy_from_target()
+    self.critic.copy_from_target()
+
   def save(self, location, epoch):
     self.actor.model.save(location+'/actor_model_{}.h5'.format(epoch))
     self.critic.model.save(location+'/critic_model_{}.h5'.format(epoch))
