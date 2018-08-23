@@ -3,7 +3,8 @@ import math
 from keras import initializers
 from keras.models import model_from_json
 from keras.models import Sequential, Model
-from keras.layers import Dense, Flatten, Input, merge, Lambda
+from keras.layers import Dense, Flatten, Input, Concatenate, Lambda
+from keras.initializers import RandomNormal
 from keras.optimizers import Adam
 import tensorflow as tf
 import keras.backend as K
@@ -22,7 +23,7 @@ class ActorNetwork(object):
     self.params_grad = tf.gradients(self.model.output, self.weights, -self.action_gradient)
     grads = zip(self.params_grad, self.weights)
     self.optimize = tf.train.AdamOptimizer(lr).apply_gradients(grads)
-    self.sess.run(tf.initialize_all_variables())
+    self.sess.run(tf.global_variables_initializer())
 
   def train(self, states, action_grads):
     self.sess.run(self.optimize, feed_dict={
@@ -45,12 +46,12 @@ class ActorNetwork(object):
     self.model.set_weights(actor_target_weights)
 
   def create_actor_network(self, state_size,action_dim):
-    print("Now we build the model")
+    print("Building Actor Model")
     S = Input(shape=[state_size])
     h0 = Dense(HP.ACTOR_N_NEURONS_L0, activation='relu')(S)
     h1 = Dense(HP.ACTOR_N_NEURONS_L1, activation='relu')(h0)
-    v = Dense(1,activation='sigmoid',init=initializers.RandomNormal(stddev=1e-4))(h1)
-    w = Dense(1,activation='sigmoid',init=initializers.RandomNormal(stddev=1e-4))(h1)
-    V = merge([v,w],mode='concat')
-    model = Model(input=S,output=V)
+    v = Dense(1,activation='sigmoid',kernel_initializer=RandomNormal())(h1)
+    w = Dense(1,activation='tanh',kernel_initializer=RandomNormal())(h1)
+    V = Concatenate()([v,w])
+    model = Model(inputs=S,outputs=V)
     return model, model.trainable_weights, S

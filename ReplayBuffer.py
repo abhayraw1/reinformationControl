@@ -33,5 +33,11 @@ class ReplayBuffer(object):
     self.buffer = deque()
     self.num_experiences = 0
 
+  def save_to_file(self, filename):
+    f = open(filename, 'w+')
+    for i in self.buffer:
+      f.write(str([str(j) for j in i])+'\n')
+    f.close()
+
   def __str__(self):
     return str(self.buffer)

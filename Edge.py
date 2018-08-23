@@ -18,8 +18,8 @@ class Edge(object):
     ## Reward function not good :(
     error = self.d*self.t_ij - other.d*other.t_ij
     n = -norm(error)
-    return n
     # return n*np.cos(np.arctan2(*error.tolist()[0][::-1])/2)*HP.REWARD_SCALE
+    return n
 
 
 class AgentEdge(Edge):
@@ -43,5 +43,9 @@ class AgentEdge(Edge):
   def state(self, targetshape):
     target = targetshape.edges[self.ij]
     targetstate = np.array([target.d, target.theta/np.pi, 0])
+    # print "--TSTATE: {}".format(targetstate)
     state = np.array([self.d, self.theta/np.pi, self.r_ij/np.pi])
-    return state - targetstate
+    # print "--CSTATE: {}".format(state)
+    d = state - targetstate
+    d[0] = np.tanh(d[0])
+    return d

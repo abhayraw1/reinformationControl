@@ -86,17 +86,17 @@ def write_stats(x, y, file):
 
 print main_model, main_model.actor.model, main_model.critic.model
 
-for aoe in agent_observed_envs.values():
-    for nbr in aoe.agent.edgeControllers.keys():
-      agent = aoe.agent
-      print "AGENT ", agent.id
-      print "actor: ", agent.edgeControllers[nbr].actor
-      print "target_actor: ", agent.edgeControllers[nbr].actor.target_model
-      print "target_critic: ", agent.edgeControllers[nbr].critic.target_model
-      print "critic: ", agent.edgeControllers[nbr].critic
-      aoe.agent.edgeControllers[nbr].copy_from_target()
-import sys
-sys.exit(0)
+# for aoe in agent_observed_envs.values():
+#     for nbr in aoe.agent.edgeControllers.keys():
+#       agent = aoe.agent
+#       print "AGENT ", agent.id
+#       print "actor: ", agent.edgeControllers[nbr].actor
+#       print "target_actor: ", agent.edgeControllers[nbr].actor.target_model
+#       print "target_critic: ", agent.edgeControllers[nbr].critic.target_model
+#       print "critic: ", agent.edgeControllers[nbr].critic
+#       aoe.agent.edgeControllers[nbr].copy_from_target()
+# import sys
+# sys.exit(0)
 ############### EVAL FUNCTION
 def evaluate(num_times, eps_len, eps):
   trewards = []
@@ -139,7 +139,8 @@ while eps <= HP.NUM_EPS:
   print "EPISODE : {}".format(eps)
   t = 1
   r = {i.id:0 for i in agents}
-  terminal = []
+  # terminal = True
+  # formed = False
   collision = False
   env.targetshape = randomtarget()
   env.reset({x.id:randPose() for x in agents})
@@ -158,23 +159,25 @@ while eps <= HP.NUM_EPS:
         reward, done, reason = aoe.getAgentReward()
         r[agent_id] += reward
         aoe.remember(nbr, [state, action, reward, next_state[nbr], done])
-        aoe.agent.train_edge_controller(nbr)
+        # aoe.agent.train_edge_controller(nbr)
         if done and reason == 'c':
           collision = True
           break
-        terminal.append(done)
+        # if reason == 'f':
+        #   formed = True
       if collision:
         break
-      if np.array(terminal).all():
-        print "--------------------FULL FORMATION FORMED--------------------"
-        print env.targetshape
-        print env.shape
+      # if formed:
+      #   print "FORMATION CLOSE ENOUGH"
+      #   print env.targetshape
+      #   print env.shape
     t += 1
 
 
   if sum(r.values()) > best_indie_score:
     best_indie_score = sum(r.values())
   print "REWARD: {}\tBEST_INDIE_SCORE: {}".format(sum(r.values()), best_indie_score)
+
 
 
   write_stats(eps, r, 'results/scores')
@@ -191,7 +194,7 @@ while eps <= HP.NUM_EPS:
     if best_mean_score < eval_score:
       savemodel(eps)
       best_mean_score = eval_score
-      for aoe in agent_observed_envs.values():
-        for nbr in aoe.current_st.keys():
-          aoe.agent.edgeControllers[nbr].copy_from_target()
+      # for aoe in agent_observed_envs.values():
+      #   for nbr in aoe.current_st.keys():
+      #     aoe.agent.edgeControllers[nbr].copy_from_target()
   eps += 1

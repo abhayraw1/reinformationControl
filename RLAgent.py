@@ -5,13 +5,13 @@ from PointEnvironment.Agent import Agent
 
 class RLAgent(Agent):
   def __init__(self, id, pose=Pose(),  \
-              defaultPose=False, collisionRadius=0.15, lenTrajectory=100):
+              defaultPose=False, collisionRadius=0.15):
     self.type     = "RLAgent"
     self.id       = id
     self.edges    = {}
     self.edgeControllers = {}
     super(RLAgent, self).__init__(id, pose=pose, defaultPose=defaultPose, \
-      collisionRadius=collisionRadius, lenTrajectory=lenTrajectory)
+      collisionRadius=collisionRadius)
 
   def initEdgeControllers(self, agent_id, controller):
     self.edgeControllers[agent_id] = controller

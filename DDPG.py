@@ -47,9 +47,9 @@ class DDPG:
 
   def act(self, obs):
     action = self.actor.model.predict(obs.reshape(1,HP.STATE_DIM))
-    action = action * (HP.MAX_ACTION-HP.MIN_ACTION) + HP.MIN_ACTION
+    action = action * HP.MAX_ACTION
     if self.train and self.epsilon > 0:
-      self.epsilon -= 1e-6
+      # self.epsilon -= 1e-6
       action = self.addOU(action)
     return action
 
@@ -59,9 +59,11 @@ class DDPG:
   def train_models(self):
     batch = self.replaybuffer.getBatch(HP.BATCH_SIZE)
     experiences = [np.asarray([i[j] for i in batch]) for j in range(5)]
+    # print experiences
     states, actions, rewards, nstates, dones = experiences
     target_q = self.compute_target_q(nstates, rewards, dones)
     loss = self.critic.model.train_on_batch([states, actions], target_q)
+    print "loss: ", loss, self.replaybuffer.count()
     a_for_grad = self.actor.model.predict(states)
     grads = self.critic.gradients(states, a_for_grad)
     self.actor.train(states, grads)
@@ -72,13 +74,15 @@ class DDPG:
     self.replaybuffer.add(obs, action, reward, next_obs, done)
 
   def compute_target_q(self, nstates, rewards, dones):
-    target_q_values = self.target_model.critic.model.predict([nstates, \
-                      self.target_model.actor.model.predict(nstates)])
+    target_q_values = self.critic.target_model.predict([nstates, \
+                      self.actor.target_model.predict(nstates)])
     y_t = np.zeros(len(nstates))
     for idx, reward in enumerate(rewards):
       y_t[idx] = reward
+      # print y_t[idx], reward, dones[idx]
       if not dones[idx]:
-        y_t += HP.GAMMA*target_q_values[idx]
+        y_t[idx] += HP.GAMMA*target_q_values[idx]
+    # print y_t
     return y_t
 
   def copy_from_target(self):

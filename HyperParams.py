@@ -21,17 +21,17 @@ GAMMA           = 0.99
 
 ###############################################################################
 ############################# TRAINING CONSTANTS ##############################
-BUFFER_SIZE         = 10**6
+BUFFER_SIZE         = 10**5
 BATCH_SIZE          = 32
 ACTOR_N_NEURONS_L0  = 300
 ACTOR_N_NEURONS_L1  = 400
-ACTOR_TAU           = 1e-2
+ACTOR_TAU           = 1e-3
 ACTOR_LR            = 1e-4
 CRITIC_N_NEURONS_L0 = 300
 CRITIC_N_NEURONS_L1 = 400
 CRITIC_TAU          = 1e-3
 CRITIC_LR           = 1e-3
-NUM_EPOCS           = 10
+NUM_EPOCS           = 15
 ###############################################################################
 ###############################################################################
 
@@ -42,7 +42,7 @@ NUM_EPS         = 10**6
 MAX_EPS_LEN     = 50
 
 EVAL_INTERVAL   = 50
-NUM_EVALS       = 10
+NUM_EVALS       = 15
 EVAL_EPS_LEN    = 2*MAX_EPS_LEN
 
 
