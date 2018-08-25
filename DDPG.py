@@ -62,7 +62,6 @@ class DDPG:
   def train_models(self):
     batch = self.replaybuffer.getBatch(HP.BATCH_SIZE)
     experiences = [np.asarray([i[j] for i in batch]) for j in range(5)]
-    # print experiences
     states, actions, rewards, nstates, dones = experiences
     target_q = self.compute_target_q(nstates, rewards, dones)
     loss = self.critic.model.train_on_batch([states, actions], target_q)

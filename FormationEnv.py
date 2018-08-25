@@ -33,7 +33,7 @@ class FormationEnvironment(PointEnvironment):
     if actions == None: actions = {}
     super(FormationEnvironment, self).step(actions)
     experiences = {}
-    for agent in self.mobile_agents.values():
+    for agent in self.agents.values():
       for e in agent.edge_agents:
         r = e.getReward()*HP.REWARD_SCALE
         r = sum(r)
@@ -42,12 +42,8 @@ class FormationEnvironment(PointEnvironment):
           r = -HP.REWARD_MAX*HP.REWARD_SCALE
         elif e.edge_maintained:
           r = HP.REWARD_MAX*HP.REWARD_SCALE
-        try:
-          actions[agent.id]
-        except:
-          print actions
-        if agent.id not in actions.keys(): actions[agent.id] = [0.,0.]
-        experiences[e.i.id, e.j.id] = [e.prevState, actions[agent.id], r, e.state, done]
+        if agent.id not in actions.keys(): actions[agent.id] = np.array([0.,0.])
+        experiences[e.i.id, e.j.id] = [np.array(e.prevState), actions[agent.id], r, np.array(e.state), done]
         e.update()
     return experiences
 
