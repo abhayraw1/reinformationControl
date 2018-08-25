@@ -41,15 +41,18 @@ class DDPG:
     self.actor = ActorNetwork(**DDPG.actorParams(sess, target_actor))
     self.critic = CriticNetwork(**DDPG.criticParams(sess, target_critic))
     self.target_model = target_model
-    self.replaybuffer = replaybuffer
+    if target_model != None:
+      self.replaybuffer = target_model.replaybuffer
+    else:
+      self.replaybuffer = replaybuffer
     self.train = train
     self.epsilon = 1
 
   def act(self, obs):
+    obs = np.array(obs)
     action = self.actor.model.predict(obs.reshape(1,HP.STATE_DIM))
     action = action * HP.MAX_ACTION
     if self.train and self.epsilon > 0:
-      # self.epsilon -= 1e-6
       action = self.addOU(action)
     return action
 
