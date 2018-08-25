@@ -3,7 +3,7 @@ import numpy as np
 
 ###############################################################################
 ####################### ENVIRONMENT RELATED CONSTANTS #########################
-STATE_DIM       = 3
+STATE_DIM       = 4
 ACTION_DIM      = 2
 
 NUM_ITERATIONS  = 50
