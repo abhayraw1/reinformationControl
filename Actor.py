@@ -50,7 +50,7 @@ class ActorNetwork(object):
     S = Input(shape=[state_size])
     h0 = Dense(HP.ACTOR_N_NEURONS_L0, activation='relu')(S)
     h1 = Dense(HP.ACTOR_N_NEURONS_L1, activation='relu')(h0)
-    v = Dense(1,activation='sigmoid',kernel_initializer=RandomNormal())(h1)
+    v = Dense(1,activation='tanh',kernel_initializer=RandomNormal())(h1)
     w = Dense(1,activation='tanh',kernel_initializer=RandomNormal())(h1)
     V = Concatenate()([v,w])
     model = Model(inputs=S,outputs=V)
