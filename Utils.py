@@ -54,7 +54,8 @@ def runExperiment(env, num_eps, eps_len, model, num_epochs=1, eval=False, \
     done = False
     t = 1
     r = 0
-    env.targetshape = targetshape if targetshape is not None else genTargetShape()
+    env.targetshape = targetshape if targetshape is not None and eval \
+                      else genTargetShape()
     if initPose is None:
       env.reset()
     else:
@@ -108,4 +109,6 @@ if __name__ == '__main__':
   for i in env.agents.values():
     i.initEdgeAgentModel(tmodel)
   # env.startVisualiser()
-  runExperiment(env, 40000, 30, tmodel, num_epochs=10, eval_interval=50, num_evals=10, eval_eps_len=50, result_path="results/run1")
+  runExperiment(env, HP.NUM_EPS, HP.MAX_EPS_LEN, tmodel, num_epochs=HP.NUM_EPOCS, \
+                eval_interval=HP.EVAL_INTERVAL, num_evals=HP.NUM_EVALS, \
+                eval_eps_len=HP.EVAL_EPS_LEN, result_path="results/run1")
