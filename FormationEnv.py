@@ -20,9 +20,9 @@ class FormationEnvironment(PointEnvironment):
     super(FormationEnvironment, self).reset(poses)
     return
 
-  def initEgdeModels(self, targetmodel):
+  def initEgdeModels(self, critic, targetmodel):
     for agent in self.agents.values():
-      agent.initEdgeAgentModel(targetmodel)
+      agent.initEdgeAgentModel(critic, targetmodel)
 
   def stepLeader(self, action):
     assert type(action) == list
@@ -41,7 +41,7 @@ class FormationEnvironment(PointEnvironment):
         if done:
           r = -HP.REWARD_MAX*HP.REWARD_SCALE
         elif e.edge_maintained:
-          r = HP.REWARD_MAX*HP.REWARD_SCALE
+          r = r+HP.REWARD_MAX*HP.REWARD_SCALE
         if agent.id not in actions.keys(): actions[agent.id] = np.array([0.,0.])
         experiences[e.i.id, e.j.id] = [np.array(e.prevState), actions[agent.id], r, np.array(e.state), done]
         e.update()

@@ -31,7 +31,7 @@ class DDPG:
             'lr':HP.CRITIC_LR,
             'target': target}
 
-  def __init__(self, target_model=None, train=True, replaybuffer=ReplayBuffer(HP.BUFFER_SIZE)):
+  def __init__(self, critic, target_model=None, train=True, replaybuffer=ReplayBuffer(HP.BUFFER_SIZE)):
     assert isinstance(target_model, DDPG) or target_model == None
     config = tf.ConfigProto()
     sess = tf.Session(config=config)
@@ -39,7 +39,7 @@ class DDPG:
     target_actor = target_model.actor if target_model != None else None
     target_critic = target_model.critic if target_model != None else None
     self.actor = ActorNetwork(**DDPG.actorParams(sess, target_actor))
-    self.critic = CriticNetwork(**DDPG.criticParams(sess, target_critic))
+    self.critic = CriticNetwork(**DDPG.criticParams(sess, target_critic)) if target_model == None else critic
     self.target_model = target_model
     if target_model != None:
       self.replaybuffer = target_model.replaybuffer

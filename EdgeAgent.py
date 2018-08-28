@@ -13,8 +13,8 @@ class RLEdgeAgent(object):
     self.target = target
     self.update()
 
-  def setModel(self, targetmodel):
-    self.model = DDPG(targetmodel, train=True)
+  def setModel(self, critic, targetmodel):
+    self.model = DDPG(critic, targetmodel, train=True)
 
   @property
   def state(self):

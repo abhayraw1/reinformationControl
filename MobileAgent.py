@@ -12,9 +12,9 @@ class MobileAgent(Agent):
     self.edge_agents  = edge_agents
     self.n_neighbours = len(edge_agents)
 
-  def initEdgeAgentModel(self, targetmodel):
+  def initEdgeAgentModel(self, critic, targetmodel):
     for i in self.edge_agents:
-      i.setModel(targetmodel)
+      i.setModel(critic, targetmodel)
 
   def getFinalAction(self, explore=False):
     if self.id == self.leader:
