@@ -73,7 +73,11 @@ def runExperiment(env, num_eps, eps_len, model, num_epochs=1, eval=False, \
         for _id, agent in env.agents.items() if _id != env.LEADER}
       for experience in env.step(f_actions).values():
         if not eval: model.replaybuffer.add(*experience)
-        # print experience[2], experience[-1]
+        print experience[0]
+        print experience[1]
+        print experience[2]
+        print experience[3]
+        print '-'*40
         done = experience[-1]
         if done:
           print "episode {} t {}".format(episode, t)
@@ -94,6 +98,10 @@ def runExperiment(env, num_eps, eps_len, model, num_epochs=1, eval=False, \
       if best_score < eval_score:
         saveModel(model, episode-1, result_path)
         best_score = eval_score
+        for agent in env.agents.values():
+          for e in agent.edge_agents:
+            e.model.copy_from_target()
+
   if eval: return cumulative_reward
 
 if __name__ == '__main__':
