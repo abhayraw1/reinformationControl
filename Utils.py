@@ -44,7 +44,7 @@ def runExperiment(env, num_eps, eps_len, model, num_epochs=1, eval=False, \
                   num_evals=10, eval_interval=50, eval_eps_len=None, \
                   result_path='', targetshape=None, initPose=None):
   mode = "eval" if eval else "training"
-  print "hola! in {} mode".format(mode)
+  print "hola! estoy en {} mode".format(mode)
   episode     = 1
   best_score  = 0
   if eval: cumulative_reward = 0
@@ -72,7 +72,7 @@ def runExperiment(env, num_eps, eps_len, model, num_epochs=1, eval=False, \
         for _id, agent in env.agents.items() if _id != env.LEADER}
       for experience in env.step(f_actions).values():
         if not eval: model.replaybuffer.add(*experience)
-        print experience[2], experience[-1]
+        # print experience[2], experience[-1]
         done = experience[-1]
         if done:
           print "episode {} t {}".format(episode, t)

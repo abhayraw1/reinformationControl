@@ -27,7 +27,7 @@ class RLEdgeAgent(object):
   def getReward(self):
     scale = np.array([5, 2, 2, 1])
     _reward = -np.array(self.prevState)*(np.array(self.state) - self.prevState)
-    print "REWD: ", _reward
+    # print "REWD: ", _reward
     return _reward*scale
 
   def update(self):
@@ -40,7 +40,7 @@ class RLEdgeAgent(object):
   def edge_maintained(self):
     scale = np.array([5, 2, 2, 1])
     n = np.linalg.norm(self.state)
-    print self.state, sum(self.state)
+    # print self.state, sum(self.state)
     criteria = np.abs(self.state[:-1])<0.05
     # print "Edge Maintained for ({},{}) : {} {}".format(self.i.id, self.j.id, criteria.all(), criteria)
     return criteria.all()
