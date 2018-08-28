@@ -2,6 +2,7 @@ import numpy as np
 from PointEnvironment.Utils import R
 from DDPG import DDPG
 from PointEnvironment.Agent import Agent
+from PointEnvironment.Utils import wrap_angle
 
 class RLEdgeAgent(object):
   def __init__(self, i, j, target):
@@ -28,6 +29,7 @@ class RLEdgeAgent(object):
     scale = np.array([5, 2, 2, 1])
     _reward = -np.array(self.prevState)*(np.array(self.state) - self.prevState)
     # print "REWD: ", _reward
+    _reward[3] = wrap_angle(_reward[3])
     return _reward*scale
 
   def update(self):
