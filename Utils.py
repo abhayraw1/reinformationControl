@@ -106,17 +106,36 @@ def runExperiment(env, num_eps, eps_len, model, num_epochs=1, eval=False, \
 
 if __name__ == '__main__':
   import HyperParams as HP
+  import tensorflow as tf
+  # from keras.models import Model
+  from Critic import CriticNetwork
+  from keras import backend as K
   # print "REWARDMAX ", HP.REWARD_MAX
-  tmodel = DDPG(train=False)
+  tmodel = DDPG(None, train=False)
+  print tmodel.critic
   visualOptions = { 'tailLength' : 4, # tail of agent's trajectory
                     'speedup' : 100, # realTime/simTime
                     'bounds': [-10,10,-10,10]# bounds of the environment [xmin, xmax, ymin, ymax]
                     }
+  config = tf.ConfigProto()
+  sess = tf.Session(config=config)
+  K.set_session(sess)
+  criticparams = {'sess': sess,
+            'state_size':HP.STATE_DIM,
+            'action_size':HP.ACTION_DIM,
+            'tau':HP.CRITIC_TAU,
+            'lr':HP.CRITIC_LR,
+            'target': tmodel.critic}
   targetshape = genTargetShape(genRandomPoints())
   env = FormationEnvironment(targetshape, num_iterations=HP.NUM_ITERATIONS, visualize=False, visualOptions=visualOptions)
-  for i in env.agents.values():
-    i.initEdgeAgentModel(tmodel)
+  common_critic = CriticNetwork(**criticparams)
+  env.initEgdeModels(common_critic, tmodel)
   # env.startVisualiser()
+  # for i in env.agents.values():
+  #   for e in i.edge_agents:
+  #     print e.model.critic
+  # import sys
+  # sys.exit(0)
   runExperiment(env, HP.NUM_EPS, HP.MAX_EPS_LEN, tmodel, num_epochs=HP.NUM_EPOCS, \
                 eval_interval=HP.EVAL_INTERVAL, num_evals=HP.NUM_EVALS, \
                 eval_eps_len=HP.EVAL_EPS_LEN, result_path="results/run1")
