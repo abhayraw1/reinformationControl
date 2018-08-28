@@ -51,7 +51,7 @@ class DDPG:
   def act(self, obs):
     obs = np.array(obs)
     action = self.actor.model.predict(obs.reshape(1,HP.STATE_DIM))
-    action = action * HP.MAX_ACTION
+    action = action * (HP.MAX_ACTION - HP.MIN_ACTION) + HP.MIN_ACTION
     if self.train and self.epsilon > 0:
       action = self.addOU(action)
     return action
