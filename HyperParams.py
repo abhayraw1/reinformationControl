@@ -13,7 +13,7 @@ MAX_ACTION      = np.array([0.7 ,  0.7])
 MIN_ACTION      = np.array([-.1   , -0.7])
 
 REWARD_SCALE    = 25
-REWARD_MAX      = REWARD_SCALE*DT*NUM_ITERATIONS*MAX_ACTION[0]
+REWARD_MAX      = 10*DT*NUM_ITERATIONS*MAX_ACTION[0]
 GAMMA           = 0.99
 ###############################################################################
 ###############################################################################
@@ -22,7 +22,7 @@ GAMMA           = 0.99
 ###############################################################################
 ############################# TRAINING CONSTANTS ##############################
 BUFFER_SIZE         = 10**6
-BATCH_SIZE          = 64
+BATCH_SIZE          = 32
 ACTOR_N_NEURONS_L0  = 300
 ACTOR_N_NEURONS_L1  = 400
 ACTOR_TAU           = 1e-3
