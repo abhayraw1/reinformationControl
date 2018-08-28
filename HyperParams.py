@@ -10,7 +10,7 @@ NUM_ITERATIONS  = 50
 DT              = 0.01
 
 MAX_ACTION      = np.array([0.7 ,  0.7])
-MIN_ACTION      = np.array([0   , -0.7])
+MIN_ACTION      = np.array([-.1   , -0.7])
 
 REWARD_SCALE    = 25
 REWARD_MAX      = REWARD_SCALE*DT*NUM_ITERATIONS*MAX_ACTION[0]
@@ -21,7 +21,7 @@ GAMMA           = 0.99
 
 ###############################################################################
 ############################# TRAINING CONSTANTS ##############################
-BUFFER_SIZE         = 10**5
+BUFFER_SIZE         = 10**6
 BATCH_SIZE          = 64
 ACTOR_N_NEURONS_L0  = 300
 ACTOR_N_NEURONS_L1  = 400
@@ -46,7 +46,7 @@ NUM_EVALS       = 15
 EVAL_EPS_LEN    = 2*MAX_EPS_LEN
 
 
-OU_MEAN         = [0.2, 0]
+OU_MEAN         = [0.3, 0]
 OU_THETA        = [0.6, 0.4]
 OU_SIGMA        = [0.3, 0.4]
 ###############################################################################
