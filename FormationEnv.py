@@ -34,9 +34,9 @@ class FormationEnvironment(PointEnvironment):
     super(FormationEnvironment, self).step(actions)
     experiences = {}
     for agent in self.agents.values():
+      if agent.id == self.LEADER: continue
       for e in agent.edge_agents:
         r = e.getReward()*HP.REWARD_SCALE
-        r = sum(r)
         done = self.collisionOccured and agent.id in self.collisionbetween
         if done:
           r = -HP.REWARD_MAX*HP.REWARD_SCALE

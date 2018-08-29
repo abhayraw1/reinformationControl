@@ -11,6 +11,7 @@ class RLEdgeAgent(object):
     self.i = i
     self.j = j
     self.target = target
+    self.prevAction = np.matrix([0., 0.])
     self.update()
 
   def setModel(self, critic, targetmodel):
@@ -26,17 +27,21 @@ class RLEdgeAgent(object):
     return _state
 
   def getReward(self):
-    scale = np.array([5, 2, 2, 1])
+    scale = np.array([5, 2, 2, 0])
     _reward = -np.array(self.prevState)*(np.array(self.state) - self.prevState)
     # print "REWD: ", _reward
     _reward[3] = wrap_angle(_reward[3])
-    return _reward*scale
+    _reward = np.sum(_reward*scale)
+    if (np.abs(self.prevAction-self.action) > [.1, .2]).any():
+      _reward -= np.linalg.norm(self.prevAction-self.action)*10
+    return _reward
 
   def update(self):
     self.prevState = self.state
 
   def getAction(self):
-    return self.model.act(self.state)
+    self.action = self.model.act(self.state)
+    return self.action
 
   @property
   def edge_maintained(self):

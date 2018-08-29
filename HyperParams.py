@@ -6,7 +6,7 @@ import numpy as np
 STATE_DIM       = 4
 ACTION_DIM      = 2
 
-NUM_ITERATIONS  = 50
+NUM_ITERATIONS  = 10
 DT              = 0.01
 
 MAX_ACTION      = np.array([0.7 ,  0.7])
